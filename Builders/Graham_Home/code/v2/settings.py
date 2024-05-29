@@ -31,9 +31,15 @@ BATTERY_VOLTAGE_PIN = board.A3
 # Low battery threshold voltage
 BATTERY_VOLTAGE_THRESHOLD = 52500
 
-# Maximum enemy targeting range
+# Maximum opponent targeting range
 MAX_DISTANCE = 600 #770
 
-# Time to charge forward before checking sensors
-CHARGE_INTERVAL = 0.05
-MAX_CHARGE = 1
+# Minimum opponent range (contacting opponent)
+# TODO experiment to find correct value
+MIN_DISTANCE = 10
+
+# Maximum number of seconds bot is allowed to be in contact with opponent before assuming deadlock
+MAX_GRAPPLE_TIME = 3
+
+# Time to charge before stopping to check sensors
+CHARGE_INTERVAL = 0.5

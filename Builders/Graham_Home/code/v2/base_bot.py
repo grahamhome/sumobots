@@ -6,7 +6,7 @@ import time
 import analogio
 import digitalio
 import simpleio
-from time import sleep
+from asyncio import sleep
 import busio
 import neopixel
 import pwmio
@@ -148,7 +148,7 @@ class SumoBotBase:
         """
         self.drive(left_speed=0, right_speed=0)
 
-    def drive(self, left_speed: float, right_speed: float, duration: float = 0):
+    async def drive(self, left_speed: float, right_speed: float, duration: float = 0):
         """
         Drive the robot wheels at the given speeds for the given duration in seconds,
         or indefinitely if no duration is given.
@@ -157,7 +157,7 @@ class SumoBotBase:
         set_motor_speed(self.motor_left, left_speed)
         set_motor_speed(self.motor_right, right_speed)
         if duration:
-            sleep(duration)
+            await sleep(duration)
             self.stop()
 
     def left_edge_detected(self):
@@ -172,38 +172,51 @@ class SumoBotBase:
         """
         return not self.edge_right.value
 
-    def right_distance(self):
+    async def right_distance(self):
         """
         Returns the distance measurement taken by the right side TOF sensor.
         """
         reading_1 = self.tof_right.range
-        sleep(0.05)
+        await sleep(0.05)
         reading_2 = self.tof_right.range
         return max(reading_1, reading_2)
 
-    def left_distance(self):
+    async def left_distance(self):
         """
         Returns the distance measurement taken by the left side TOF sensor.
         """
         reading_1 = self.tof_left.range
-        sleep(0.05)
+        await sleep(0.05)
         reading_2 = self.tof_left.range
         return max(reading_1, reading_2)
 
-    def enemy_in_range_right(self):
+    async def opponent_in_range_right(self):
         """
         Returns True if the right side TOF sensor detects an obstacle within
         the maximum detection range, False otherwise.
         """
-        return self.right_distance() < MAX_DISTANCE
+        return await self.right_distance() < MAX_DISTANCE
 
-    def enemy_in_range_left(self):
+    async def opponent_in_range_left(self):
         """
         Returns True if the left side TOF sensor detects an obstacle within
         the maximum detection range, False otherwise.
         """
-        return self.left_distance() < MAX_DISTANCE
+        return await self.left_distance() < MAX_DISTANCE
 
+    async def contacting_opponent_right(self):
+        """
+        Returns True if the right side TOF sensor detects an obstacle
+        at the minimum detection range, False otherwise.
+        """
+        return await self.right_distance() <= MIN_DISTANCE
+
+    async def contacting_opponent_left(self):
+        """
+        Returns True if the left side TOF sensor detects an obstacle
+        at the minimum detection range, False otherwise.
+        """
+        return await self.left_distance() <= MIN_DISTANCE
     def shut_down(self):
         """
         Stops the motors and de-initializes the I2C connections to shut down the robot.
@@ -220,8 +233,6 @@ class SumoBotBase:
         Returns True if the battery voltage is below a preset threshold, False otherwise.
         """
         return self.battery_analog_in.value < BATTERY_VOLTAGE_THRESHOLD
-
-
 def set_motor_speed(motor: DCMotor, speed: float):
     """
     Sets the given motor to the given speed,

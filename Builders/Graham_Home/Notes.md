@@ -19,9 +19,13 @@ Will most likely need a more granular state enum e.g. "moving forwards", "backin
 
 ## Action/state list
 * Turn to face opponent (turn radius inv. proportional to opponent distance)
+* Turn to face away from opponent (turn radius inv. proportional to opponent distance)
+  * These two actions can be 1 function and determined by an avoid/attack toggle
+  * Avoid/attack toggle = avoid when edge recently detected, else attack
 * Charge opponent
 * Turn around (e.g. when edge detected with both sensors)
 * Turn away (e.g. when edge detected with one sensor)
+* **Drive away from edge and opponent** (after turning away from edge)
 * Back away from opponent (when stalemate detected)
     * Want to improve this maneuver e.g. back up while turning 45 degrees
     * Maybe back up while turning 90 degrees then rotate back 45 degrees?
