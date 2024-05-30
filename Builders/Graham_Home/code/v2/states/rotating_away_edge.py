@@ -1,6 +1,7 @@
 from .fleeing_edge import FleeingEdge
 from .state import State
 
+
 class RotatingAwayEdge(State):
 
     async def start(self):

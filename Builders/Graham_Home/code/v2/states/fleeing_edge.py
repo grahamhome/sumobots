@@ -1,12 +1,14 @@
 from .searching import Searching
 from .state import State
 
+
 class FleeingEdge(State):
     """
     Robot is fleeing the edge of the arena.
     """
+
     async def start(self):
-        super().start()
+        await super().start()
         # If both sensors are over the edge, drive straight backwards.
         if self.bot.left_edge_detected() and self.bot.right_edge_detected():
             print("Backing straight up and turning around")

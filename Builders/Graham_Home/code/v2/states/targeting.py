@@ -3,6 +3,7 @@ from .rotating_away_edge import RotatingAwayEdge
 from .searching import Searching
 from .state import State
 
+
 class Targeting(State):
 
     async def start(self):
@@ -23,4 +24,3 @@ class Targeting(State):
     async def edge_detected(self):
         self.logger.debug("Edge detected")
         self.switch(RotatingAwayEdge)
-

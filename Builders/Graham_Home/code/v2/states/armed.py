@@ -1,6 +1,7 @@
 from .countdown import Countdown
 from .state import State
 
+
 class Armed(State):
     def start(self):
         super().start()
