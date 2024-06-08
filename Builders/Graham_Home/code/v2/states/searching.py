@@ -1,7 +1,4 @@
-from .charging import Charging
-from .rotating_away_edge import RotatingAwayEdge
-from .state import State
-from .targeting import Targeting
+from states import State
 
 
 class Searching(State):
@@ -19,10 +16,12 @@ class Searching(State):
 
     def opponent_detected(self):
         self.logger.debug("Opponent detected")
+        from states import Targeting
         self.switch(Targeting)
 
 
     def edge_detected(self):
         self.logger.debug("Edge detected")
+        from states import RotatingAwayEdge
         self.switch(RotatingAwayEdge)
 

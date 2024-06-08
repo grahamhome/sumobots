@@ -1,6 +1,6 @@
 from asyncio import sleep
 
-from .state import State
+from states import State
 
 
 class BatteryLow(State):

@@ -1,8 +1,4 @@
-from .grappling import Grappling
-from .rotating_away_edge import RotatingAwayEdge
-from .searching import Searching
-from .state import State
-from .targeting import Targeting
+from states import State
 
 
 class Charging(State):
@@ -24,12 +20,16 @@ class Charging(State):
         self.logger.debug("Opponent detected")
         if self.bot.opponent_in_range_left() and self.bot.opponent_in_range_right():
             if self.bot.contacting_opponent_left() or self.bot.contacting_opponent_right():
+                from states import Grappling
                 self.switch(Grappling)
         elif self.bot.opponent_in_range_left() or self.bot.opponent_in_range_left():
+            from states import Targeting
             self.switch(Targeting)
         else:
+            from states import Searching
             self.switch(Searching)
         
     def edge_detected(self):
         self.logger.debug("Edge detected")
+        from states import RotatingAwayEdge
         self.switch(RotatingAwayEdge)

@@ -1,9 +1,8 @@
 import time
 from asyncio import sleep
 
-from .breaking_grapple import BreakingGrapple
-from .state import State
-from ..settings import MAX_GRAPPLE_TIME
+from states import State
+from settings import MAX_GRAPPLE_TIME
 
 
 class Grappling(State):
@@ -17,6 +16,7 @@ class Grappling(State):
         await self.bot.drive(right_speed=1, left_speed=1)
         while True:
             if time.monotonic() - grapple_start >= MAX_GRAPPLE_TIME:
+                from states import BreakingGrapple
                 self.switch(BreakingGrapple)
             await sleep(0)
 

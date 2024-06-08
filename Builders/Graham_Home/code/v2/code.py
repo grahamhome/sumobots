@@ -1,23 +1,19 @@
 import asyncio
 from asyncio import sleep
 
-from sumobots.Builders.Graham_Home.code.v2.states import Searching
-from sumobots.Builders.Graham_Home.code.v2.base_bot import SumoBotBase
-
-bot = SumoBotBase()
-
-# TODO make this file code.py
+from states.searching import Searching
+from base_bot import SumoBotBase
 
 class StateManager:
 
     def __init__(self):
         self.bot = SumoBotBase()
-        self.state = Searching()
+        self.state = Searching(self.bot)
 
     async def manage_state(self):
         while True:
             if self.state.next:
-                self.state = self.state.next()
+                self.state = self.state.next(self.bot)
                 await self.state.start()
             await sleep(0)
 

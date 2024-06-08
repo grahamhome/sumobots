@@ -1,5 +1,4 @@
-from .fleeing_edge import FleeingEdge
-from .state import State
+from states import State
 
 
 class RotatingAwayEdge(State):
@@ -12,4 +11,5 @@ class RotatingAwayEdge(State):
             await self.bot.drive(left_speed=-0.5, right_speed=0.5, duration=0.25)
         elif self.bot.left_edge_detected():
             await self.bot.drive(left_speed=0.5, right_speed=-0.5, duration=0.25)
+        from states import FleeingEdge
         self.switch(FleeingEdge)

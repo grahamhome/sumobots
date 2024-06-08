@@ -1,8 +1,6 @@
 from asyncio import sleep
 
-from .armed import Armed
-from .state import State
-from .battery_low import BatteryLow
+from states import State
 
 
 class Idle(State):
@@ -11,6 +9,7 @@ class Idle(State):
         self.bot.pixels.fill(0xFF0000)
         while True:
             if self.bot.battery_low():
+                from states import BatteryLow
                 self.switch(BatteryLow)
                 break
             else:
@@ -19,4 +18,5 @@ class Idle(State):
     async def button_pressed(self, key_event):
         self.logger.debug("Button press detected")
         if key_event.key_number == 0 and key_event.pressed:
+            from states import Armed
             self.switch(Armed)

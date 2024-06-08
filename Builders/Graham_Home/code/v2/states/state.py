@@ -1,5 +1,5 @@
-from ..base_bot import SumoBotBase
-import logging
+from base_bot import SumoBotBase
+import adafruit_logging as logging
 
 
 class State:
@@ -10,16 +10,16 @@ class State:
     def __init__(self, bot: SumoBotBase):
         self.bot = bot
         self.next = None
-        self.setup_logger()
+        self.logger = self.get_logger()
 
 
-    def setup_logger(self):
-        self.logger = logging.getLogger("SumoBot")
-        self.logger.setLevel(logging.DEBUG)
-        file_handler = logging.FileHandler("sumobot.log")
-        file_handler.setLevel(logging.DEBUG)
-        file_handler.setFormatter(logging.Formatter(f"{self.__class__.__name__}: %(asctime)s - %(name)s - %(levelname)s - %(message)s"))
-        self.logger.addHandler(file_handler)
+    def get_logger(self):
+        logger = logging.getLogger("SumoBot")
+        logger.setLevel(logging.DEBUG)
+        serial_handler = logging.StreamHandler()
+        serial_handler.setLevel(logging.DEBUG)
+        logger.addHandler(serial_handler)
+        return logger
 
     async def start(self):
         """

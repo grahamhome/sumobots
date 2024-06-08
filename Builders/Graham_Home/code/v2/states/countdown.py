@@ -1,8 +1,7 @@
 import simpleio
 
-from .searching import Searching
-from .state import State
-from ..melodies import note_frequencies
+from states import State
+from melodies import note_frequencies
 
 
 class Countdown(State):
@@ -15,4 +14,5 @@ class Countdown(State):
             duration=0.3,
         )
         self.bot.pixels.fill(0)
+        from states import Searching
         self.switch(Searching)
