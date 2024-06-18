@@ -5,7 +5,7 @@ from melodies import note_frequencies
 
 
 class Countdown(State):
-    def start(self):
+    async def start(self):
         super().start()
         self.bot.pixels.fill(0x00FF00)
         simpleio.tone(
