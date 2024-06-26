@@ -11,13 +11,12 @@ class StateManager:
 
     def __init__(self):
         self.bot = SumoBotBase()
-        self.state = Idle(self.bot)
+        self.state = Idle(self.bot, self)
 
     async def manage_state(self):
         await self.state.start()
         while True:
-            if self.state.next:
-                self.state = self.state.next(self.bot)
+            if not self.state.started:
                 await self.state.start()
             await self.state.run()
 

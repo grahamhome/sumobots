@@ -1,15 +1,14 @@
 from time import sleep
 
-from sumobots.Builders.Graham_Home.code.v2.base_bot import SumoBotBase
-from sumobots.Builders.Graham_Home.code.v2.settings import *
+from base_bot import SumoBotBase
+from settings import *
 
 
-class GrahamSumoBot(SumoBotBase):
+class BasicSumoBot(SumoBotBase):
     """
-    My implementation of the sumo bot fighting routine.
+    Basic implementation of the sumo bot fighting routine.
     Other botmasters may define their own SumoBot classes which extend SumoBotBase,
     and add their own fight() method with their own personal fighting strategy.
-    Good luck beating my strategy, though. ;)
     """
 
     def fight(self):
@@ -43,50 +42,51 @@ class GrahamSumoBot(SumoBotBase):
             self.drive(left_speed=1, right_speed=-1, duration=0.4)
 
         # ******************************
-        # 2. Scan for opponent and charge it!
+        # 2. Scan for enemy and charge it!
         # ******************************
 
-        # Check for opponent straight ahead
+        # Check for enemy straight ahead
         charge_time = 0
-        if self.opponent_in_range_right() and self.opponent_in_range_left():
+        if self.enemy_in_range_right() and self.enemy_in_range_left():
             # Charge!
             print("Charging boldly forward")
             charge_time = 0
+            # TODO: Full speed lifts up edge sensors & gives false positive for edge - fix me
             self.drive(right_speed=0.7, left_speed=0.7)
             while (
-                self.opponent_in_range_right()
-                and self.opponent_in_range_left()
+                self.enemy_in_range_right()
+                and self.enemy_in_range_left()
                 and not (self.right_edge_detected() or self.left_edge_detected())
-                and charge_time < MAX_GRAPPLE_TIME
+                and charge_time < MAX_CHARGE
             ):
                 sleep(CHARGE_INTERVAL)
                 charge_time += CHARGE_INTERVAL
             self.stop()
-            if charge_time >= MAX_GRAPPLE_TIME:
+            if charge_time >= MAX_CHARGE:
                 # Back up to charge again
                 print("Backing up and turning away from opponent")
                 self.drive(left_speed=-1, right_speed=-0.8, duration=0.7)
 
-        # Check for opponent to right
+        # Check for enemy to right
         else:
             right_distance = self.right_distance()
             left_distance = self.left_distance()
             if right_distance < MAX_DISTANCE:
                 print("Looking right")
-                # Turn to the right - set turn duration inversely proportional to opponent distance
+                # Turn to the right - set turn duration inversely proportional to enemy distance
                 self.drive(left_speed=0.5, right_speed=-0.5, duration=0.2*((MAX_DISTANCE-right_distance)/MAX_DISTANCE))
 
-            # Check for opponent to left
+            # Check for enemy to left
             elif left_distance < MAX_DISTANCE:
                 print("Looking left")
-                # Turn to the left - set turn duration inversely proportional to opponent distance
+                # Turn to the left - set turn duration inversely proportional to enemy distance
                 self.drive(left_speed=-0.5, right_speed=0.5, duration=0.2*((MAX_DISTANCE-left_distance)/MAX_DISTANCE))
 
-            # Spin and look for opponent
+            # Spin and look for enemy
             else:
                 # Turn to the left
                 print("Spinning")
                 self.drive(left_speed=-1, right_speed=1, duration=0.05)
 
 if __name__ == "__main__":
-    GrahamSumoBot().run()
+    BasicSumoBot().run()

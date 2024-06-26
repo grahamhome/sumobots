@@ -23,7 +23,7 @@ class Idle(State):
             await sleep(0)
 
     async def button_pressed(self, key_event):
-        self.logger.debug("Button press detected from idle state")
+        self.logger.debug(f"Button {key_event.key_number} press (pressed={key_event.pressed}) detected from idle state")
         if key_event.key_number == 0 and key_event.pressed:
             from states import Armed
-            self.switch(Armed)
+            await self.switch(Armed)

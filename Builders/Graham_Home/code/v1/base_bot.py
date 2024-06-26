@@ -1,12 +1,13 @@
 # *************************************************
 # Sumo Bot Firmware
 # *************************************************
-import adafruit_logging as logging
 import random
+import time
 
 import analogio
 import digitalio
-from asyncio import sleep
+import simpleio
+from time import sleep
 import busio
 import neopixel
 import pwmio
@@ -99,14 +100,69 @@ class SumoBotBase:
         # Decide if bot will spin to the left or to the right
         self.spin_right = bool(random.randint(0, 1))
 
-    async def stop(self):
+    def run(self):
+        """
+        Sumo bot main execution loop.
+        """
+        leds_on = False
+        while True:
+            if self.state == DISARMED:
+                if self.battery_low():
+                    if leds_on:
+                        self.pixels.fill(0xFF0000)
+                    else:
+                        self.pixels.fill(0x000000)
+                    leds_on = not leds_on
+                    time.sleep(0.5)
+                else:
+                    self.pixels.fill(0xFF0000)
+                key_event = self.keypad.events.get()
+                if key_event and key_event.key_number == 0 and key_event.pressed:
+                    self.state = ARMED
+            elif self.state == ARMED:
+                self.pixels.fill(0xFFFF00)
+                key_event = self.keypad.events.get()
+                if key_event and key_event.key_number == 0 and not key_event.pressed:
+                    self.state = COUNTDOWN
+            elif self.state == COUNTDOWN:
+                self.pixels.fill(0x00FF00)
+                simpleio.tone(
+                    pin=self.piezo,
+                    frequency=523.25,
+                    duration=0.3,
+                )
+                leds_on = True
+                for _ in range(10):
+                    if leds_on:
+                        self.pixels.fill(0x00FF00)
+                    else:
+                        self.pixels.fill(0x000000)
+                    leds_on = not leds_on
+                    sleep(0.5)
+                self.state = FIGHTING
+            elif self.state == FIGHTING:
+                if self.battery_low():
+                    self.pixels.fill(0xFF4500)
+                else:
+                    self.pixels.fill(0)
+                self.fight()
+
+
+    def fight(self):
+        """
+        Stub for the fight() method. Implement this method in your own subclass of SumoBotBase.
+        """
+        raise NotImplementedError(
+            "Please create a subclass of SumoBotBase and implement your own fight() method there."
+        )
+
+    def stop(self):
         """
         Stops both motors.
         """
-        logging.getLogger("SumoBot_Base").info("Bot stopping")
-        await self.drive(left_speed=0, right_speed=0)
+        self.drive(left_speed=0, right_speed=0)
 
-    async def drive(self, left_speed: float, right_speed: float, duration: float = 0):
+    def drive(self, left_speed: float, right_speed: float, duration: float = 0):
         """
         Drive the robot wheels at the given speeds for the given duration in seconds,
         or indefinitely if no duration is given.
@@ -115,8 +171,8 @@ class SumoBotBase:
         set_motor_speed(self.motor_left, left_speed)
         set_motor_speed(self.motor_right, right_speed)
         if duration:
-            await sleep(duration)
-            await self.stop()
+            sleep(duration)
+            self.stop()
 
     def left_edge_detected(self):
         """
@@ -130,37 +186,37 @@ class SumoBotBase:
         """
         return not self.edge_right.value
 
-    async def right_distance(self):
+    def right_distance(self):
         """
         Returns the distance measurement taken by the right side TOF sensor.
         """
         reading_1 = self.tof_right.range
-        await sleep(0.05)
+        sleep(0.05)
         reading_2 = self.tof_right.range
         return max(reading_1, reading_2)
 
-    async def left_distance(self):
+    def left_distance(self):
         """
         Returns the distance measurement taken by the left side TOF sensor.
         """
         reading_1 = self.tof_left.range
-        await sleep(0.05)
+        sleep(0.05)
         reading_2 = self.tof_left.range
         return max(reading_1, reading_2)
 
-    async def opponent_in_range_right(self):
+    def opponent_in_range_right(self):
         """
         Returns True if the right side TOF sensor detects an obstacle within
         the maximum detection range, False otherwise.
         """
-        return await self.right_distance() < MAX_DISTANCE
+        return self.right_distance() < MAX_DISTANCE
 
-    async def opponent_in_range_left(self):
+    def opponent_in_range_left(self):
         """
         Returns True if the left side TOF sensor detects an obstacle within
         the maximum detection range, False otherwise.
         """
-        return await self.left_distance() < MAX_DISTANCE
+        return self.left_distance() < MAX_DISTANCE
 
     def shut_down(self):
         """

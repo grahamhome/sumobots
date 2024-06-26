@@ -3,6 +3,8 @@ from asyncio import sleep
 from base_bot import SumoBotBase
 import adafruit_logging as logging
 
+from code import StateManager
+
 
 def get_logger():
     logger = logging.getLogger("SumoBot")
@@ -20,35 +22,38 @@ class State:
 
     logger = get_logger()
 
-    def __init__(self, bot: SumoBotBase):
+    def __init__(self, bot: SumoBotBase, state_manager: StateManager):
         self.bot = bot
         self.next = None
-        self.logger.info(f"Creating state {self.__class__.__name__}")
+        self.manager = state_manager
 
     async def start(self):
         """
         Action performed on state activation.
         """
-        self.logger.debug("Starting")
+        self.logger.debug(f"Starting {self.__class__.__name__}")
 
     async def run(self):
         """
         Action performed repeatedly while state is active.
         """
-        self.logger.debug(f"Running in state {self.__class__.__name__}")
+        #self.logger.debug(f"Running in state {self.__class__.__name__}")
         await sleep(0.1)
 
-    def switch(self, next):
-        self.logger.debug(f"Switching to {next.__name__}")
-        self.stop()
-        self.next = next
+    async def switch(self, next_state):
+        self.logger.debug(f"Switching to {next_state.__name__}")
+        await self.stop()
+        new_state = next_state(self.bot, self.manager)
+        await new_state.start()
+        self.manager.state = new_state
+
 
 
     async def stop(self):
         """
         Action performed on state deactivation.
         """
-        self.logger.debug("Stopping")
+        self.logger.debug(f"Stopping {self.__class__.__name__}")
 
     async def opponent_detected(self):
         """

@@ -6,7 +6,7 @@ from melodies import note_frequencies
 
 class Countdown(State):
     async def start(self):
-        super().start()
+        await super().start()
         self.bot.pixels.fill(0x00FF00)
         simpleio.tone(
             pin=self.bot.piezo,
@@ -15,4 +15,4 @@ class Countdown(State):
         )
         self.bot.pixels.fill(0)
         from states import Searching
-        self.switch(Searching)
+        await self.switch(Searching)

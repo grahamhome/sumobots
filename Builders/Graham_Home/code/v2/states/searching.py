@@ -7,21 +7,21 @@ class Searching(State):
     """
 
     async def start(self):
-        super().start()
-        self.bot.drive(left_speed=-1, right_speed=1)
+        await super().start()
+        await self.bot.drive(left_speed=-0.5, right_speed=0.5)
 
     async def stop(self):
+        self.logger.info("Searching is stopping")
         await super().stop()
-        self.bot.stop()
+        await self.bot.stop()
 
     async def opponent_detected(self):
         self.logger.debug("Opponent detected")
         from states import Targeting
-        self.switch(Targeting)
+        await self.switch(Targeting)
 
 
     async def edge_detected(self):
-        self.logger.debug("Edge detected")
         from states import RotatingAwayEdge
-        self.switch(RotatingAwayEdge)
+        await self.switch(RotatingAwayEdge)
 
