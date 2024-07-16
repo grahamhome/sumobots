@@ -6,13 +6,16 @@ from states import State
 class Idle(State):
     async def start(self):
         self.logger.info("Idle state started")
+        self.manager.active = False
         await super().start()
         self.bot.pixels.fill(0xFF0000)
         self.battery_low = self.bot.battery_low()
         self.leds_off = False
+        self.manager.active = True
 
     async def run(self):
-        if self.battery_low:
+        await super().run()
+        if self.bot.battery_low:
             if self.leds_off:
                 self.bot.pixels.fill(0x000000)
             else:

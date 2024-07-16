@@ -16,10 +16,11 @@ class Grappling(State):
         await self.bot.drive(right_speed=1, left_speed=1)
 
     async def run(self):
+        await super().run()
         if time.monotonic() - self.grapple_start >= MAX_GRAPPLE_TIME:
             from states import BreakingGrapple
-            self.switch(BreakingGrapple)
+            await self.switch(BreakingGrapple)
         await sleep(0)
 
     async def stop(self):
-        self.bot.stop()
+        await self.bot.stop()

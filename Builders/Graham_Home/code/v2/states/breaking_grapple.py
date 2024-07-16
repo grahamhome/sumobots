@@ -6,4 +6,4 @@ class BreakingGrapple(State):
         await super().start()
         await self.bot.drive(left_speed=-1, right_speed=-0.8, duration=0.7)
         from states import Searching
-        self.switch(Searching)
+        await self.switch(Searching)

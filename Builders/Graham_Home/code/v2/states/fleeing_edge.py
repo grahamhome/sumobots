@@ -31,4 +31,4 @@ class FleeingEdge(State):
             await self.bot.drive(left_speed=1, right_speed=-1, duration=0.4)
 
         from states import Searching
-        self.switch(Searching)
+        await self.switch(Searching)

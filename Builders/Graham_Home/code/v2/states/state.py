@@ -26,26 +26,29 @@ class State:
         self.bot = bot
         self.next = None
         self.manager = state_manager
+        self.started = False
 
     async def start(self):
         """
         Action performed on state activation.
         """
         self.logger.debug(f"Starting {self.__class__.__name__}")
+        await self.bot.stop()
+        self.started = True
 
     async def run(self):
         """
         Action performed repeatedly while state is active.
         """
-        #self.logger.debug(f"Running in state {self.__class__.__name__}")
-        await sleep(0.1)
+        if not self.started:
+            await self.start()
 
     async def switch(self, next_state):
         self.logger.debug(f"Switching to {next_state.__name__}")
+        self.manager.active = False
         await self.stop()
-        new_state = next_state(self.bot, self.manager)
-        await new_state.start()
-        self.manager.state = new_state
+        self.manager.state = next_state(self.bot, self.manager)
+        self.manager.active = True
 
 
 

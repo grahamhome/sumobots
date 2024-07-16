@@ -162,6 +162,20 @@ class SumoBotBase:
         """
         return await self.left_distance() < MAX_DISTANCE
 
+    async def contacting_opponent_right(self):
+        """
+        Returns True if the right side TOF sensor detects an obstacle within
+        the minimum detection range, False otherwise.
+        """
+        return await self.right_distance() < MIN_DISTANCE
+
+    async def contacting_opponent_left(self):
+        """
+        Returns True if the left side TOF sensor detects an obstacle within
+        the minimum detection range, False otherwise.
+        """
+        return await self.left_distance() < MIN_DISTANCE
+
     def shut_down(self):
         """
         Stops the motors and de-initializes the I2C connections to shut down the robot.

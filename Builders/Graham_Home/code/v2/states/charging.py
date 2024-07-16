@@ -10,8 +10,8 @@ class Charging(State):
         await self.bot.drive(right_speed=1, left_speed=1)
 
     async def stop(self):
-        super().stop()
-        self.bot.stop()
+        await super().stop()
+        await self.bot.stop()
 
     # TODO: Consider changing direction slightly when opponent detected left/right
     #  (will need to maintain state of L & R motor speeds to adjust)
@@ -21,15 +21,15 @@ class Charging(State):
         if self.bot.opponent_in_range_left() and self.bot.opponent_in_range_right():
             if self.bot.contacting_opponent_left() or self.bot.contacting_opponent_right():
                 from states import Grappling
-                self.switch(Grappling)
+                await self.switch(Grappling)
         elif self.bot.opponent_in_range_left() or self.bot.opponent_in_range_left():
             from states import Targeting
-            self.switch(Targeting)
+            await self.switch(Targeting)
         else:
             from states import Searching
-            self.switch(Searching)
+            await self.switch(Searching)
         
     async def edge_detected(self):
         self.logger.debug("Edge detected")
         from states import RotatingAwayEdge
-        self.switch(RotatingAwayEdge)
+        await self.switch(RotatingAwayEdge)
