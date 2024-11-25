@@ -2,6 +2,7 @@ from states import State
 
 
 class BreakingGrapple(State):
+    color = 0xFFA500
     async def start(self):
         await super().start()
         await self.bot.drive(left_speed=-1, right_speed=-0.8, duration=0.7)

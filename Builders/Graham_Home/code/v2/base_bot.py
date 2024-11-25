@@ -1,7 +1,6 @@
 # *************************************************
 # Sumo Bot Firmware
 # *************************************************
-import adafruit_logging as logging
 import random
 
 import analogio
@@ -103,7 +102,6 @@ class SumoBotBase:
         """
         Stops both motors.
         """
-        logging.getLogger("SumoBot_Base").info("Bot stopping")
         await self.drive(left_speed=0, right_speed=0)
 
     async def drive(self, left_speed: float, right_speed: float, duration: float = 0):

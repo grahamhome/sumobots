@@ -3,6 +3,8 @@ from states import State
 
 class Targeting(State):
 
+    color = 0xADD8E6
+
     async def start(self):
         await super().start()
         if self.bot.opponent_in_range_left() and self.bot.opponent_in_range_right():
@@ -16,11 +18,12 @@ class Targeting(State):
             from states import Searching
             await self.switch(Searching)
 
-    # async def stop(self):
-    #     await super().stop()
-    #     await self.bot.stop()
+    async def stop(self):
+        await super().stop()
+        await self.bot.stop()
 
     async def edge_detected(self):
-        self.logger.debug("Edge detected")
-        from states import RotatingAwayEdge
-        await self.switch(RotatingAwayEdge)
+        print("Edge detected")
+        await self.stop()
+        from states import FleeingEdge
+        await self.switch(FleeingEdge)

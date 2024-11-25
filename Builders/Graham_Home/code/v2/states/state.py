@@ -1,27 +1,14 @@
 from asyncio import sleep
 
 from base_bot import SumoBotBase
-import adafruit_logging as logging
 
 from code import StateManager
-
-
-def get_logger():
-    logger = logging.getLogger("SumoBot")
-    logger.setLevel(logging.DEBUG)
-    serial_handler = logging.StreamHandler()
-    serial_handler.setLevel(logging.DEBUG)
-    logger.addHandler(serial_handler)
-    return logger
-
 
 class State:
     """
     ABC for State subclasses.
     """
-
-    logger = get_logger()
-
+    color = 0xFF0000
     def __init__(self, bot: SumoBotBase, state_manager: StateManager):
         self.bot = bot
         self.next = None
@@ -32,8 +19,9 @@ class State:
         """
         Action performed on state activation.
         """
-        self.logger.debug(f"Starting {self.__class__.__name__}")
+        print(f"Starting {self.__class__.__name__}")
         await self.bot.stop()
+        self.bot.pixels.fill(self.color)
         self.started = True
 
     async def run(self):
@@ -44,7 +32,6 @@ class State:
             await self.start()
 
     async def switch(self, next_state):
-        self.logger.debug(f"Switching to {next_state.__name__}")
         self.manager.active = False
         await self.stop()
         self.manager.state = next_state(self.bot, self.manager)
@@ -56,7 +43,7 @@ class State:
         """
         Action performed on state deactivation.
         """
-        self.logger.debug(f"Stopping {self.__class__.__name__}")
+        self.bot.pixels.fill(0xFF0000)
 
     async def opponent_detected(self):
         """

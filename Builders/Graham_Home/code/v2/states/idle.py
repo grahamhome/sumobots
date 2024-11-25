@@ -4,18 +4,19 @@ from states import State
 
 
 class Idle(State):
+
+    color = 0xFF0000
     async def start(self):
-        self.logger.info("Idle state started")
+        print("Idle state started")
         self.manager.active = False
         await super().start()
-        self.bot.pixels.fill(0xFF0000)
         self.battery_low = self.bot.battery_low()
         self.leds_off = False
         self.manager.active = True
 
     async def run(self):
         await super().run()
-        if self.bot.battery_low:
+        if self.battery_low:
             if self.leds_off:
                 self.bot.pixels.fill(0x000000)
             else:
@@ -26,7 +27,7 @@ class Idle(State):
             await sleep(0)
 
     async def button_pressed(self, key_event):
-        self.logger.debug(f"Button {key_event.key_number} press (pressed={key_event.pressed}) detected from idle state")
+        print(f"Button {key_event.key_number} press (pressed={key_event.pressed}) detected from idle state")
         if key_event.key_number == 0 and key_event.pressed:
             from states import Armed
             await self.switch(Armed)

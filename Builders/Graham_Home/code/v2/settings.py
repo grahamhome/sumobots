@@ -36,7 +36,7 @@ MAX_DISTANCE = 300 #600 #770
 
 # Minimum opponent range (contacting opponent)
 # TODO experiment to find correct value
-MIN_DISTANCE = 10
+MIN_DISTANCE = 50
 
 # Maximum number of seconds bot is allowed to be in contact with opponent before assuming deadlock
 MAX_GRAPPLE_TIME = 3

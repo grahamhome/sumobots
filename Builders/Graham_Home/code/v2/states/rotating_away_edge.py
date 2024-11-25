@@ -3,6 +3,7 @@ from states import State
 
 class RotatingAwayEdge(State):
 
+    color = 0xFFC0CB
     async def start(self):
         await super().start()
         if self.bot.right_edge_detected() and self.bot.left_edge_detected():
