@@ -98,11 +98,12 @@ class SumoBotBase:
         # Decide if bot will spin to the left or to the right
         self.spin_right = bool(random.randint(0, 1))
 
-    async def stop(self):
+    def stop(self):
         """
         Stops both motors.
         """
-        await self.drive(left_speed=0, right_speed=0)
+        set_motor_speed(self.motor_left, 0)
+        set_motor_speed(self.motor_right, 0)
 
     async def drive(self, left_speed: float, right_speed: float, duration: float = 0):
         """
@@ -114,7 +115,7 @@ class SumoBotBase:
         set_motor_speed(self.motor_right, right_speed)
         if duration:
             await sleep(duration)
-            await self.stop()
+            self.stop()
 
     def left_edge_detected(self):
         """

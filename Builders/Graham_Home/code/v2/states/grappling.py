@@ -10,7 +10,7 @@ class Grappling(State):
     Robot is making contact with the opponent.
     """
 
-    color = 0x00008B
+    color = 0x00008B  # Red
 
     async def start(self):
         await super().start()
@@ -21,14 +21,14 @@ class Grappling(State):
         await super().run()
         if time.monotonic() - self.grapple_start >= MAX_GRAPPLE_TIME:
             from states import BreakingGrapple
-            await self.switch(BreakingGrapple)
+            self.switch(BreakingGrapple)
         await sleep(0)
 
-    async def stop(self):
-        await self.bot.stop()
+    def stop(self):
+        self.bot.stop()
 
     async def edge_detected(self):
         print("Edge detected")
-        await self.stop()
+        self.stop()
         from states import FleeingEdge
-        await self.switch(FleeingEdge)
+        self.switch(FleeingEdge)

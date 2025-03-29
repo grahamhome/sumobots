@@ -9,21 +9,21 @@ class Targeting(State):
         await super().start()
         if self.bot.opponent_in_range_left() and self.bot.opponent_in_range_right():
             from states import Charging
-            await self.switch(Charging)
+            self.switch(Charging)
         if self.bot.opponent_in_range_left():
             await self.bot.drive(left_speed=-1, right_speed=1)
         elif self.bot.opponent_in_range_right():
             await self.bot.drive(left_speed=1, right_speed=-1)
         else:
             from states import Searching
-            await self.switch(Searching)
+            self.switch(Searching)
 
-    async def stop(self):
-        await super().stop()
-        await self.bot.stop()
+    def stop(self):
+        super().stop()
+        self.bot.stop()
 
     async def edge_detected(self):
         print("Edge detected")
-        await self.stop()
+        self.stop()
         from states import FleeingEdge
-        await self.switch(FleeingEdge)
+        self.switch(FleeingEdge)

@@ -16,28 +16,28 @@ class StateManager:
         while True:
             if self.active:
                 await self.state.run()
-            await sleep(0.1)
+            await sleep(0)
 
     async def check_distance_sensors(self):
         while True:
             if self.active:
                 if await self.bot.opponent_in_range_left() or await self.bot.opponent_in_range_right():
                     await self.state.opponent_detected()
-            await sleep(0.1)
+            await sleep(0)
 
     async def check_edge_sensors(self):
         while True:
             if self.active:
                 if self.bot.left_edge_detected() or self.bot.right_edge_detected():
                     await self.state.edge_detected()
-            await sleep(0.1)
+            await sleep(0)
 
     async def check_buttons(self):
         while True:
             if self.active:
                 if key_event := self.bot.keypad.events.get():
                     await self.state.button_pressed(key_event)
-            await sleep(0.1)
+            await sleep(0)
 
 async def main():
     manager = StateManager()
@@ -47,6 +47,6 @@ async def main():
                          asyncio.create_task(manager.check_buttons()))
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+# if __name__ == "__main__":
+#     asyncio.run(main())
 

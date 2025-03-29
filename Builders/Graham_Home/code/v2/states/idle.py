@@ -30,4 +30,4 @@ class Idle(State):
         print(f"Button {key_event.key_number} press (pressed={key_event.pressed}) detected from idle state")
         if key_event.key_number == 0 and key_event.pressed:
             from states import Armed
-            await self.switch(Armed)
+            self.switch(Armed)

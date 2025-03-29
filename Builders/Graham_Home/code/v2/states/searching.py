@@ -9,18 +9,21 @@ class Searching(State):
     async def start(self):
         await super().start()
         await self.bot.drive(left_speed=-0.5, right_speed=0.5)
+        self.cancelled = False
 
-    async def stop(self):
+    def stop(self):
         print("Searching is stopping")
-        await super().stop()
-        await self.bot.stop()
+        super().stop()
+        self.bot.stop()
 
     async def opponent_detected(self):
-        print("Opponent detected")
-        from states import Targeting
-        await self.switch(Targeting)
+        if not self.cancelled:
+            print("Opponent detected")
+            from states import Targeting
+            self.switch(Targeting)
 
     async def edge_detected(self):
+        self.cancelled = True
         from states import FleeingEdge
-        await self.switch(FleeingEdge)
+        self.switch(FleeingEdge)
 

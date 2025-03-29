@@ -24,4 +24,4 @@ class Countdown(State):
             await sleep(0.5)
         self.bot.pixels.fill(0)
         from states import Searching
-        await self.switch(Searching)
+        self.switch(Searching)

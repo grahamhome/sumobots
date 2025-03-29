@@ -20,7 +20,7 @@ class State:
         Action performed on state activation.
         """
         print(f"Starting {self.__class__.__name__}")
-        await self.bot.stop()
+        self.bot.stop()
         self.bot.pixels.fill(self.color)
         self.started = True
 
@@ -31,15 +31,16 @@ class State:
         if not self.started:
             await self.start()
 
-    async def switch(self, next_state):
+    def switch(self, next_state):
+        print(f"Switching to {next_state.__name__}")
         self.manager.active = False
-        await self.stop()
+        self.stop()
         self.manager.state = next_state(self.bot, self.manager)
         self.manager.active = True
 
 
 
-    async def stop(self):
+    def stop(self):
         """
         Action performed on state deactivation.
         """
